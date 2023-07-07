@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 8080;
+const port = 3000;
 
 // Middleware to parse JSON data
 app.use(express.json());
@@ -71,4 +71,24 @@ app.get('*', (req, res) => {
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+const mysql = require('mysql2');
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: 'your_database_host',
+  user: 'your_username',
+  password: 'your_password',
+  database: 'your_database_name'
+});
+
+// Example query using connection pool
+pool.getConnection((err, connection) => {
+  if (err) throw err;
+  
+  connection.query('SELECT * FROM tasks', (error, results, fields) => {
+    connection.release(); // Release the connection back to the pool
+    
+    if (error) throw error;
+    console.log(results);
+  });
 });
